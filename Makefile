@@ -1,5 +1,5 @@
 # Поменяй эту переменную на название своей программы
-export NAME:=cheburashka
+export NAME:=hashtable
 # Так как многие пользуются Windows то переменная ниже
 # будет содержать расширение испольняемых файлов Windows,
 # которое можно убрать, если пользуешься MacOS или Linux.
@@ -15,7 +15,7 @@ includes=${wildcard include/*.h}
 ifdef DEBUG
   CFLAGS:=$(CFLAGS) -g -DDEBUG
 else
-  CFLAGS:=$(CFLAGS) -O3
+  CFLAGS:=$(CFLAGS) -O3 -DNDEBUG
 endif
 
 .PHONY: build
@@ -47,4 +47,4 @@ uninstall:
 clean:
 	$(MAKE) -C src clean
 	$(MAKE) -C test clean
-	$(RM) $(NAME)
+	$(RM) $(NAME)$(EXE)
