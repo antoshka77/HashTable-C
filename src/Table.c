@@ -1,73 +1,88 @@
 #include "Table.h"
 
-int HashFunction(int size, int sizeLine)
+
+
+int HashFunction(char* key)
 {
-	return (sizeLine % size);
+	int i = 0;
+	int h = 0;
+	while (key[i] != '\0')
+	{
+		h += T[0 ^ key[i]];
+		i++;
+	}
+	return h;
 }
 
-List** Init(int size)
+HashTable Init(int initialSize)
 {
-	List** head = (List**)malloc(size * sizeof(List*));//Создание динамического массива списков (первая строка хэш таблицы)
+	HashTable table;
+	table.head = (List**)malloc(initialSize * sizeof(List*));//Создание динамического массива списков (первая строка хэш таблицы)
 	int i;
 	//Для каждого элемента первой строки хэш таблицы выделяем память под список, куда кладём элементы, подходящие по коду хэш функции
-	for (i = 0; i < size; i++)
+	for (i = 0; i < initialSize; i++)
 	{
-		head[i] = (List*)malloc(size * sizeof(List));
-		head[i] = NULL;
+		table.head[i] = (List*)malloc(sizeof(List));
+		table.head[i] = NULL;
 	}
-	return head;
+	table.size = initialSize;
+	table.count = (int*)malloc(sizeof(int));
+	table.count[0] = 0;
+	return table;
 }
 
-List* CreateKnot(char* key, int size)
+
+HashTable Add(HashTable h, char* toAdd)
 {
-	
-	int sizeLine = HashFunction(size, strlen(key));
-	List* ptr = (List*)malloc(sizeof(List));
+	int sizeLine = HashFunction(toAdd) % h.size;
+	List* ptr = (List*)malloc(sizeof(List)); //создаваемый узел
+	List* node;
 	ptr->sizeLine = sizeLine;
-	ptr->key = (char*)malloc((strlen(key) + 1) * sizeof(char));
-	strcpy(ptr->key, key);
+	ptr->key = (char*)malloc((strlen(toAdd) + 1) * sizeof(char));
+	strcpy(ptr->key, toAdd);
 	ptr->next = NULL;
-	return ptr;
-}
-
-List** Add(List* knot, List** head)
-{
-	List* ptr;
-	ptr = head[knot->sizeLine];
-	if (ptr == NULL) 
-		head[knot->sizeLine] = knot; 
+	node = h.head[sizeLine];
+	if (node == NULL) 
+		h.head[sizeLine] = ptr;
 	else 
 	{
-		while (ptr->next != NULL)
-			ptr = ptr->next;
-		ptr->next = knot; 
+		while (node->next != NULL)
+			node = node->next;
+		node->next = ptr; 
 	}
-	return head;
+	h.count[0]++;
+	if (h.count[0] == h.size)
+		h = Rebuild(h);
+	return h;
 }
 
-List** Delete(char* key, List** head, int size)
+void Delete(HashTable h, char* toDelete)
 {
-	int sizeLine = HashFunction(size, strlen(key));
+	int sizeLine = HashFunction(toDelete) % h.size;
 	List *current, *previous;
 	previous = NULL;
-	current = head[sizeLine];
-	while (current) 
+	current = h.head[sizeLine];
+	int flag = 0;
+	while (current)
 	{
-		if (strcmp(current->key, key) == 0) 
+		if (strcmp(current->key, toDelete) == 0)
 		{
-			if (current == head[sizeLine])
+			if (current == h.head[sizeLine])
 			{
-				if (head[sizeLine]->next == NULL)
+				if (h.head[sizeLine]->next == NULL)
 				{
 					free(current->key);
 					free(current);
-					head[sizeLine] = NULL;
-					return head;
+					h.head[sizeLine] = NULL;
+					flag = 1;
+					h.count[0]--;
+					return;
 				}
-				head[sizeLine] = current->next;
+				h.head[sizeLine] = current->next;
 				free(current->key);
 				free(current);
-				current = head[sizeLine];
+				flag = 1;
+				current = h.head[sizeLine];
 			}
 			else
 			{
@@ -76,6 +91,7 @@ List** Delete(char* key, List** head, int size)
 					previous->next = current->next;
 					free(current->key);
 					free(current);
+					flag = 1;
 					current = previous->next;
 				}
 				else
@@ -83,64 +99,58 @@ List** Delete(char* key, List** head, int size)
 					previous->next = NULL;
 					free(current->key);
 					free(current);
-					return head;
+					flag = 1;
+					h.count[0]--;
+					return;
 				}
 			}
 		}
 		previous = current;
 		current = previous->next;
 	}
-	if (head[sizeLine] == current)
-		head[sizeLine] = current;
-	return head;
+	if (h.head[sizeLine] == current)
+		h.head[sizeLine] = current;
+	if (flag == 1)
+		h.count[0]--;
 }
 
-int Search(char* key, List** head, int size, int mod)
+int Search(HashTable h, char* key)
 {
-	int sizeLine = HashFunction(size, strlen(key));
+	int sizeLine = HashFunction(key) % h.size;
 	List* ptr;
-	int count = 0;
-	ptr = head[sizeLine];
-	if (mod == 1) 
-		printf("Key for search: %s. ", key);
+	ptr = h.head[sizeLine];
 	while (ptr)
 	{
 		if (strcmp(ptr->key, key) == 0)
-		{
-			if (mod == 1)
-				printf("Result of search is true Square coordinates: [%d; %d].\n", sizeLine, count);
 			return 1;
-		}
 		ptr = ptr->next;
-		count++;
 	}
-	if (mod == 1)
-		printf("Reuslt of search is false.\n");
 	return 0;
 }
 
-void Destruct(List** head, int size)
+void Destruct(HashTable h)
 {
 	int i;
-	for (i = 0; i < size; i++)
+	for (i = 0; i < h.size; i++)
 	{
-		while (head[i])
-			head = Delete(head[i]->key, head, size);
-		free(head[i]);
+		while (h.head[i])
+			Delete(h, h.head[i]->key);
+		free(h.head[i]);
 	}
-	free(head);
+	free(h.head);
+	free(h.count);
 }
 
-void PrintTable(List** head, int size, FILE* fileout)
+void PrintTable(HashTable h, FILE* fileout)
 {
 	int i, j;
 	List* ptr;
 	fprintf(fileout, "____________________________________________\n");
-	fprintf(fileout, "Size of table: %d", size);
-	for (i = 0; i < size; i++)
+	fprintf(fileout, "Size of table: %d", h.size);
+	for (i = 0; i < h.size; i++)
 	{
 		fprintf(fileout, "\n\nSquare %d is ", i);
-		ptr = head[i];
+		ptr = h.head[i];
 		if (ptr != NULL)
 		{
 			j = 0;
@@ -158,71 +168,45 @@ void PrintTable(List** head, int size, FILE* fileout)
 	fprintf(fileout, "\n____________________________________________\n");
 }
 
-List** Rebuild(List** head, int sizePrev, int sizeNew)
-{
-	List** headNew = Init(sizeNew);
-	List *ptrCur;
-	int i;
-	if (sizePrev == sizeNew)
-	{
-		Destruct(headNew, sizeNew);
-		return head;
-	}
-	else
-	{
-		for (i = 0; i < sizePrev; i++)
-		{
-			ptrCur = head[i];
-			while (ptrCur)
-			{
-				headNew = Add(CreateKnot(ptrCur->key, sizeNew), headNew);
-				ptrCur = ptrCur->next;
-			}
-		}
-	}
-	Destruct(head, sizePrev);
-	return headNew;
-}
 
-int Equals(List** head1, int size1, List** head2, int size2)
+int Equals(HashTable h1, HashTable h2)
 {
 	int i;
 	int countSame = 0;
-	int count1 = Count(head1, size1);
-	int count2 = Count(head2, size2);
 	List* ptr;
-	if ((size1 != size2) || (count1 != count2))
+	if ((h1.size != h2.size) || (h1.count[0] != h2.count[0]))
 		return 0;
 	else
 	{
-		for (i = 0; i < size1; i++)
+		for (i = 0; i < h1.size; i++)
 		{
-			ptr = head1[i];
+			ptr = h1.head[i];
 			while (ptr)
 			{
-				countSame += Search(ptr->key, head2, size2, 0);
+				countSame += Search(h2, ptr->key);
 				ptr = ptr->next;
 			}
 		}
 	}
-	if (countSame == count1)
+	if (countSame == h1.count[0])
 		return 1;
 	return 0;
 }
 
-int Count(List** head, int size)
+HashTable Rebuild(HashTable h)
 {
-	int i, count = 0;
-	List* ptr;
-	for (i = 0; i < size; i++)
+	HashTable headNew = Init(2 * h.size);
+	List *ptrCur;
+	int i;
+	for (i = 0; i < h.size; i++)
 	{
-		ptr = head[i];
-		while (ptr)
+		ptrCur = h.head[i];
+		while (ptrCur)
 		{
-			count++;
-			ptr = ptr->next;
+			Add(headNew, ptrCur->key);
+			ptrCur = ptrCur->next;
 		}
 	}
-	return count;
+	Destruct(h);
+	return headNew;
 }
-

@@ -33,8 +33,9 @@ int main(int argc, char* argv[])
 	char* string = NULL;
 	FILE *filein;
 	FILE *fileout;
-	List** head = NULL;
+	HashTable h1, h2;
 	int size = 0;
+	int eq = 0;
 	int* flag = (int*)malloc(sizeof(int));
 	*flag = 0;
 	if (argc > 3)
@@ -48,23 +49,36 @@ int main(int argc, char* argv[])
 		fileout = fopen(argv[2], "w");
 		if (filein == NULL)
 		{
-			printf("ERROR: file is not open\n");
+			printf("ERROR: file is empty\n");
 			return 911;
 		}
 		else
 		{
 			string = ReadLine(flag);
 			size = atoi(string);
-			head = Init(size);
+			h1 = Init(size);
+			h2 = Init(size);
 			while (*flag != 1)
 			{
 				free(string);
 				string = ReadLine(flag);
 				fprintf(fileout, "%s %d\n", string, strlen(string));
-				head = Add(CreateKnot(string, size), head);
+				h1 = Add(h1, string);
+				h2 = Add(h2, string);
 			}
-			PrintTable(head, size, fileout);
-			Destruct(head, size);
+			eq = Equals(h1, h2);
+			fprintf(fileout, "\n%d\n", eq);
+			Delete(h1, "Xvc");
+			eq = Equals(h1, h2);
+			fprintf(fileout, "\n%d\n", eq);
+			PrintTable(h1, fileout);
+			h2 = Add(h2, "fdsg");
+			PrintTable(h2, fileout);
+			fprintf(fileout, "\n%d\n", Search(h1, "Xvc"));
+			fprintf(fileout, "%d\n", Search(h1, "asdf"));
+			Destruct(h1);
+			Destruct(h2);
+
 		}
 	}
 	return 0;

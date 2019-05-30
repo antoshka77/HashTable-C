@@ -4,39 +4,38 @@
 void test()
 {
 	int size = 10;
-	List** head1;
+	HashTable head1;
 	head1 = Init(size);
-	head1 = Add(CreateKnot("1", size), head1);
-	head1 = Add(CreateKnot("20", size), head1);
+	head1 = Add(head1, "a");
+	head1 = Add(head1, "as");
 
-	List** head2;
+	HashTable head2;
 	head2 = Init(size);
-	head2 = Add(CreateKnot("1", size), head2);
-	head2 = Add(CreateKnot("20", size), head2);
+	head2 = Add(head2, "a");
+	head2 = Add(head2, "as");
 
-	assert_equals_int(1, Equals(head1, size, head2, size));
+	assert_equals_int(1, Equals(head1, head2));
 
-	List** head3;
+	HashTable head3;
 	head3 = Init(size);
-	head3 = Add(CreateKnot("1", size), head3);
+	head3 = Add(head3, "a");
 
-	List** head4;
+	HashTable head4;
 	head4 = Init(size);
-	head4 = Add(CreateKnot("1", size), head4);
-	head4 = Add(CreateKnot("20", size), head4);
+	head4 = Add(head4, "a");
+	head4 = Add(head4, "as");
 
-	assert_equals_int(0, Equals(head3, size, head4, size));
+	assert_equals_int(0, Equals(head3, head4));
 
-	List** head5;
+	HashTable head5;
 	head5 = Init(size);
-	head5 = Add(CreateKnot("1", size), head5);
-	head5 = Add(CreateKnot("2", size), head5);
+	head5 = Add(head5, "a");
+	head5 = Add(head5, "as");
 
-
-	List** head6;
+	HashTable head6;
 	head6 = Init(size);
-	head6 = Add(CreateKnot("1", size), head6);
-	head6 = Add(CreateKnot("20", size), head6);
+	head6 = Add(head6, "a");
+	head6 = Add(head6, "asf");
 
-	assert_equals_int(0, Equals(head5, size, head6, size));
+	assert_equals_int(0, Equals(head5, head6));
 }
