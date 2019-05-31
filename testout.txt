@@ -1,27 +1,29 @@
-asdf 4
-asfddfgf 8
-zxvcrqt 7
-asdfasdgfhhgk 13
-asdfwrtydfg 11
-asdfiuyi 8
-Xvc 3
-asdff 5
 ____________________________________________
-Size of table: 4
+Size of table: 9
 
-Square 0 is 
-0) asdf
-1) asfddfgf
-2) asdfiuyi
+Square 0 is empty
 
 Square 1 is 
-0) asdfasdgfhhgk
-1) asdff
+0) asfddfgf
 
-Square 2 is empty
-
-Square 3 is 
+Square 2 is 
 0) zxvcrqt
 1) asdfwrtydfg
-2) Xvc
+
+Square 3 is 
+0) asdff
+
+Square 4 is 
+0) Xvc
+
+Square 5 is 
+0) asdfiuyi
+
+Square 6 is 
+0) asdfasdgfhhgk
+
+Square 7 is 
+0) asdf
+
+Square 8 is empty
 ____________________________________________

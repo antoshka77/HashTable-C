@@ -33,9 +33,8 @@ int main(int argc, char* argv[])
 	char* string = NULL;
 	FILE *filein;
 	FILE *fileout;
-	HashTable h1, h2;
+	HashTable h;
 	int size = 0;
-	int eq = 0;
 	int* flag = (int*)malloc(sizeof(int));
 	*flag = 0;
 	if (argc > 3)
@@ -56,29 +55,16 @@ int main(int argc, char* argv[])
 		{
 			string = ReadLine(flag);
 			size = atoi(string);
-			h1 = Init(size);
-			h2 = Init(size);
+			h = Init(size);
 			while (*flag != 1)
 			{
 				free(string);
 				string = ReadLine(flag);
-				fprintf(fileout, "%s %d\n", string, strlen(string));
-				h1 = Add(h1, string);
-				h2 = Add(h2, string);
+				//fprintf(fileout, "%s %d\n", string, strlen(string));
+				h = Add(h, string);
 			}
-			eq = Equals(h1, h2);
-			fprintf(fileout, "\n%d\n", eq);
-			Delete(h1, "Xvc");
-			eq = Equals(h1, h2);
-			fprintf(fileout, "\n%d\n", eq);
-			PrintTable(h1, fileout);
-			h2 = Add(h2, "fdsg");
-			PrintTable(h2, fileout);
-			fprintf(fileout, "\n%d\n", Search(h1, "Xvc"));
-			fprintf(fileout, "%d\n", Search(h1, "asdf"));
-			Destruct(h1);
-			Destruct(h2);
-
+			PrintTable(h, fileout);
+			Destruct(h);
 		}
 	}
 	return 0;
