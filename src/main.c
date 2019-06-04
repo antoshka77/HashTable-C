@@ -3,7 +3,7 @@
 char* ReadLine(int* flag)
 {
 	char symb; 
-	char *string = (char*)malloc(0);
+	char *string = NULL/*(char*)malloc(0)*/;
 	int shift = 1;
 	symb = (char)fgetc(stdin);
 	shift++;
