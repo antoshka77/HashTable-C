@@ -2,13 +2,9 @@
 
 char* ReadLine(int* flag)
 {
-	char symb; 
+	char symb = '0'; 
 	char *string = NULL;
 	int shift = 1;
-	symb = (char)fgetc(stdin);
-	shift++;
-	string = (char*)realloc(string, shift);
-	string[shift - 2] = symb;
 	while (symb != '\n')
 	{
 		if (symb == EOF)
