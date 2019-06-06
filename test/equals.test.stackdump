@@ -1,0 +1,8 @@
+Exception: STATUS_ACCESS_VIOLATION at eip=00401FD2
+eax=00330032 ebx=20000250 ecx=20000210 edx=20000228 esi=00404132 edi=0000000A
+ebp=20000240 esp=0062CB80 program=D:\msys32\home\Александр\LLP-lab5\test\equals.test, pid 580, thread main
+cs=001B ds=0023 es=0023 fs=003B gs=0000 ss=0023
+Stack trace:
+Frame     Function  Args
+20000240  00401FD2 (00000038, 00000013, 00000006, 20000260)
+End of stack trace

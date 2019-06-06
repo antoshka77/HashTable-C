@@ -1,10 +1,16 @@
 export NAME:=hashtable
 EXE:=.exe
-#--------------------
 export TESTS
-export CFLAGS:=-Wall -std=c11 -pedantic -Wextra -I../include $(CFLAGS)
+export CFLAGS+= -Wall -std=c11 -pedantic -Wextra -I../include
+export LDLIBS:=-lm
 PREFIX:=${or $(PREFIX),$(PREFIX),/usr/local}
 includes=${wildcard include/*.h}
+
+ifdef DEBUG
+  CFLAGS+= -g -DDEBUG
+else
+  CFLAGS+= -O3 -DNDEBUG
+endif
 
 .PHONY: build
 build:
