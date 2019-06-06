@@ -6,12 +6,6 @@ export CFLAGS:=-Wall -std=c11 -pedantic -Wextra -I../include $(CFLAGS)
 PREFIX:=${or $(PREFIX),$(PREFIX),/usr/local}
 includes=${wildcard include/*.h}
 
-ifdef DEBUG
-  CFLAGS:=$(CFLAGS) -g -DDEBUG
-else
-  CFLAGS:=$(CFLAGS) -O3 -DNDEBUG
-endif
-
 .PHONY: build
 build:
 	$(MAKE) -C src
