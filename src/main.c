@@ -56,7 +56,6 @@ int main(int argc, char* argv[])
 			{
 				free(string);
 				string = ReadLine(flag);
-				//fprintf(fileout, "%s %d\n", string, strlen(string));
 				h = Add(h, string);
 			}
 			PrintTable(h, fileout);

@@ -1,14 +1,8 @@
-# Поменяй эту переменную на название своей программы
 export NAME:=hashtable
-# Так как многие пользуются Windows то переменная ниже
-# будет содержать расширение испольняемых файлов Windows,
-# которое можно убрать, если пользуешься MacOS или Linux.
-# Просто закоментируй, если не нужно.
 EXE:=.exe
 #--------------------
 export TESTS
 export CFLAGS:=-Wall -std=c11 -pedantic -Wextra -I../include $(CFLAGS)
-export LDLIBS:=-lm
 PREFIX:=${or $(PREFIX),$(PREFIX),/usr/local}
 includes=${wildcard include/*.h}
 
